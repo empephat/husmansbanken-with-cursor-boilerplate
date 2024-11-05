@@ -34,6 +34,27 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+        # Debug step to check directory structure
+      - name: Debug - List Files
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Directory contents:"
+          ls -la
+          echo "Prisma directory contents (if exists):"
+          ls -la prisma || echo "Prisma directory not found"
+
+        # Try to locate and validate schema file
+      - name: Validate Prisma Schema Location
+        run: |
+          if [ -f "prisma/schema.prisma" ]; then
+            echo "Schema file found at prisma/schema.prisma"
+            cat prisma/schema.prisma
+          else
+            echo "Schema file not found at prisma/schema.prisma"
+            find . -name "schema.prisma"
+          fi
+
         # Instead of creating schema file, just run generate
       - name: Generate Prisma Client
         env:
