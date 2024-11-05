@@ -34,6 +34,13 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+        # Instead of creating schema file, just run generate
+      - name: Generate Prisma Client
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          npx prisma generate --schema=./prisma/schema.prisma
+
       - name: Build
         run: npm run build
 
@@ -41,7 +48,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: next-app-build
+          name: app-build
           path: |
             .next
             package.json
@@ -60,7 +67,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: next-app-build
+          name: app-build
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -112,7 +119,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: next-app-build
+          name: app-build
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
