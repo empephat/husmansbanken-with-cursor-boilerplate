@@ -25,6 +25,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
+      - run: npm ci
+
       # Cache node_modules
       - name: Cache node_modules
         uses: actions/cache@v4
